@@ -73,13 +73,25 @@ def Recover(im,t,A,tx = 0.1):
     return res
 
 def Dehaze(fn):
-    src = cv2.imread(fn);
-    I = src.astype('float64')/255;
-    dark = DarkChannel(I,15);
-    A = AtmLight(I,dark);
-    te = TransmissionEstimate(I,A,15);
-    t = TransmissionRefine(src,te);
-    J = Recover(I,t,A,0.1);
+    src = cv2.imread(fn)
+    orig_h, orig_w = src.shape[:2]
+    max_dim = 800
+    if max(orig_h, orig_w) > max_dim:
+        scale = max_dim / max(orig_h, orig_w)
+        w, h = int(orig_w * scale), int(orig_h * scale)
+        src = cv2.resize(src, (w, h), interpolation=cv2.INTER_AREA)
+    else:
+        w, h = orig_w, orig_h
+
+    I = src.astype('float64') / 255
+    dark = DarkChannel(I, 15)
+    A = AtmLight(I, dark)
+    te = TransmissionEstimate(I, A, 15)
+    t = TransmissionRefine(src, te)
+    J = Recover(I, t, A, 0.1)
+
+    if (w, h) != (orig_w, orig_h):
+        J = cv2.resize(J, (orig_w, orig_h), interpolation=cv2.INTER_CUBIC)
     return J
 
 def SaveImage(J):

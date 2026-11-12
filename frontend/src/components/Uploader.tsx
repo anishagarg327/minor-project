@@ -61,7 +61,7 @@ const Uploader = () => {
             try {
             const response = await axios.post(`${apiUrl}/dehaze`, formData, {
                 responseType: "blob",
-                timeout: 120000,
+                timeout: 180000,
             });
             return response;
             } catch (err: any) {

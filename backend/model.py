@@ -131,7 +131,7 @@ class VideoProcessor:
     def process_frame(self, frame, is_video=False):
         orig_h, orig_w = frame.shape[:2]
         # Video frames on CPU need smaller dimension for fast processing
-        max_dim = (240 if is_video else 768) if device == 'cpu' else 1280
+        max_dim = (240 if is_video else 360) if device == 'cpu' else 1280
         if max(orig_h, orig_w) > max_dim:
             scale = max_dim / max(orig_h, orig_w)
             w, h = (int(orig_w * scale) // 4) * 4, (int(orig_h * scale) // 4) * 4
